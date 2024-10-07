@@ -9,20 +9,16 @@ interface Verifier {
 	boolean verify(String input);
 }
 
-class Reader {
-	public Scanner s;
+class Tui {
+	private static Scanner s = new Scanner(System.in);
 
-	public Reader(InputStream source) {
-		s = new Scanner(source);
-	}
-
-	public String ask(String prompt, String invalidPrompt, Verifier v) {
-		System.out.println(prompt);
+	public static String ask(String prompt, String invalidPrompt, Verifier v) {
+		System.out.print(prompt);
 
 		String input = s.nextLine();
 
 		while (!v.verify(input)) {
-			System.out.println(invalidPrompt);
+			System.out.print(invalidPrompt);
 			input = s.nextLine();
 		}
 
@@ -54,26 +50,22 @@ public class GuessNum {
 			}
 		}
 
-		boolean end = false;
-
 		System.out.println("Welcome to guess a number!");
-
-		Reader reader = new Reader(System.in);
 
 		Random rng = new Random(new Date().getTime());
 
-		while (!end) {
+		while (true) {
 			BigInteger secret = new BigInteger(max.bitLength(), rng).mod(max);
 
 			// System.out.println(String.format("The secret number is: %d", secret));
 
 			System.out.println(String.format("A random number is generated between 0 to %d inclusively.",
-					max));
+					max.add(new BigInteger("-1"))));
 
 			BigInteger input = new BigInteger(
-					reader.ask(
-							"Please enter a number:",
-							"Invalid, please try again:",
+					Tui.ask(
+							"Please enter a number: ",
+							"Invalid, please try again: ",
 							isInteger));
 
 			int tries = 1;
@@ -82,9 +74,9 @@ public class GuessNum {
 				System.out.println(input.compareTo(secret) == 1 ? "Too large" : "Too small.");
 
 				input = new BigInteger(
-						reader.ask(
-								"Please enter another number:",
-								"Invalid, please try again:",
+						Tui.ask(
+								"Please enter another number: ",
+								"Invalid, please try again: ",
 								isInteger));
 
 				tries++;
@@ -93,7 +85,7 @@ public class GuessNum {
 			System.out.println(String.format("Congradulations! You guessed the right number in %d %s!",
 					tries, tries == 1 ? "try" : "tries"));
 
-			end = reader.ask("Enter 'n' to exit.", "", (s) -> true).equals("n");
+			Tui.ask("Enter anything to continue, or Ctrl-C to exit.\n", "", (s) -> true);
 		}
 	}
 }
