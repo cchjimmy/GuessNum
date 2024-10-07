@@ -96,8 +96,4 @@ public class GuessNum {
 			end = reader.ask("Enter 'n' to exit.", "", (s) -> true).equals("n");
 		}
 	}
-
-	public static void printHelp() {
-		System.out.println("Usage: java GuessNum [min] [max]");
-	}
 }
